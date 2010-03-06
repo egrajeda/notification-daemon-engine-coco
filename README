@@ -1,0 +1,31 @@
+Notification Daemon Nodoka Engine/Theme
+***************************************
+
+LICENSE INFORMATION
+===================
+
+This package is licensed under GPLv3+. Read COPYING for more details.
+
+SHORT DESCRIPTION
+=================
+
+This package contains the nodoka engine for the notification daemon theme.
+
+REQUIRES
+========
+In order to build you need these two packages:
+libsexy
+gtk2
+
+In Fedora this means you need to install libsexy-devel package.
+
+INSTALLATION INSTRUCTIONS
+=========================
+./configure --prefix=/usr
+make
+su
+make install
+
+HOW TO ENABLE
+=============
+Set gconf "/apps/notification-daemon/theme" key to "nodoka".
