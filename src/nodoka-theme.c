@@ -234,11 +234,11 @@ update_content_hbox_visibility(WindowData *windata)
 		GTK_WIDGET_VISIBLE(windata->body_label) ||
 		GTK_WIDGET_VISIBLE(windata->actions_box))
 	{
-		gtk_widget_show(windata->content_hbox);
+		//gtk_widget_show(windata->content_hbox);
 	}
 	else
 	{
-		gtk_widget_hide(windata->content_hbox);
+		//gtk_widget_hide(windata->content_hbox);
 	}
 }
 
@@ -685,45 +685,34 @@ create_notification(UrlClickedCb url_clicked)
 	windata->main_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(windata->main_hbox);
 	gtk_container_add(GTK_CONTAINER(padding), windata->main_hbox);
+	gtk_container_set_border_width(GTK_CONTAINER(windata->main_hbox), 13);
+   
+    /* The icon goes at the left */ 
+	windata->iconbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(windata->iconbox);
+	gtk_box_pack_start(GTK_BOX(windata->main_hbox), windata->iconbox,
+					   FALSE, FALSE, 0);
     
+	windata->icon = gtk_image_new();
+	gtk_box_pack_start(GTK_BOX(windata->iconbox), windata->icon,
+					   FALSE, FALSE, 0);
+
+    /* The title and the text at the right */
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
 	gtk_box_pack_start(GTK_BOX(windata->main_hbox), vbox, TRUE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 13);
-
-	hbox = gtk_hbox_new(FALSE, 6);
-	gtk_widget_show(hbox);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	windata->summary_label = gtk_label_new(NULL);
 	gtk_widget_show(windata->summary_label);
-	gtk_box_pack_start(GTK_BOX(hbox), windata->summary_label, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), windata->summary_label, FALSE, FALSE, 0);
 	gtk_misc_set_alignment(GTK_MISC(windata->summary_label), 0, 0);
 	gtk_label_set_line_wrap(GTK_LABEL(windata->summary_label), TRUE);
 
 	atkobj = gtk_widget_get_accessible(windata->summary_label);
 	atk_object_set_description(atkobj, "Notification summary text.");
 
-	windata->content_hbox = gtk_hbox_new(FALSE, 6);
-	gtk_box_pack_start(GTK_BOX(vbox), windata->content_hbox, FALSE, FALSE, 0);
-
-	windata->iconbox = gtk_hbox_new(FALSE, 0);
-	gtk_widget_show(windata->iconbox);
-	gtk_box_pack_start(GTK_BOX(windata->content_hbox), windata->iconbox,
-					   FALSE, FALSE, 0);
-	gtk_widget_set_size_request(windata->iconbox, BODY_X_OFFSET, -1);
-
-	windata->icon = gtk_image_new();
-	gtk_box_pack_start(GTK_BOX(windata->iconbox), windata->icon,
-					   TRUE, TRUE, 0);
-	gtk_misc_set_alignment(GTK_MISC(windata->icon), 0.5, 0.0);
-
-	vbox = gtk_vbox_new(FALSE, 6);
-	gtk_widget_show(vbox);
-	gtk_box_pack_start(GTK_BOX(windata->content_hbox), vbox, TRUE, TRUE, 0);
-
 	windata->body_label = gtk_label_new(NULL);
-	gtk_box_pack_start(GTK_BOX(vbox), windata->body_label, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), windata->body_label, FALSE, FALSE, 0);
 	gtk_misc_set_alignment(GTK_MISC(windata->body_label), 0, 0);
 	gtk_label_set_line_wrap(GTK_LABEL(windata->body_label), TRUE);
 	g_signal_connect(G_OBJECT(windata->body_label), "activate-link",
