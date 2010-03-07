@@ -688,7 +688,7 @@ create_notification(UrlClickedCb url_clicked)
 	gtk_container_set_border_width(GTK_CONTAINER(windata->main_hbox), 13);
    
     /* The icon goes at the left */ 
-	windata->iconbox = gtk_hbox_new(FALSE, 0);
+	windata->iconbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(windata->iconbox);
 	gtk_box_pack_start(GTK_BOX(windata->main_hbox), windata->iconbox,
 					   FALSE, FALSE, 0);
