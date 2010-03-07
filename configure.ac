@@ -1,6 +1,6 @@
-AC_INIT([notification-daemon-engine-nodoka],[0.1.0],
-        [https://nodoka.fedorahosted.org/])
-AC_CONFIG_SRCDIR([src/nodoka-theme.c])
+AC_INIT([notification-daemon-engine-coco],[0.1.0],
+        [https://github.com/tatofoo/notification-daemon-engine-coco])
+AC_CONFIG_SRCDIR([src/coco-theme.c])
 
 ENGINE_MAJOR_VERSION=0
 ENGINE_MINOR_VERSION=1
@@ -14,13 +14,13 @@ if test "x$ENGINE_DEVEL_VERSION" != "x0"; then
 fi
 
 AC_DEFINE_UNQUOTED(ENGINE_MAJOR_VERSION, $ENGINE_MAJOR_VERSION,
-	[notification-daemon-engine-nodoka major version.])
+	[notification-daemon-engine-coco major version.])
 AC_DEFINE_UNQUOTED(ENGINE_MINOR_VERSION, $ENGINE_MINOR_VERSION,
-	[notification-daemon-engine-nodoka minor version.])
+	[notification-daemon-engine-coco minor version.])
 AC_DEFINE_UNQUOTED(ENGINE_MICRO_VERSION, $ENGINE_MICRO_VERSION,
-	[notification-daemon-engine-nodoka micro version.])
+	[notification-daemon-engine-coco micro version.])
 AC_DEFINE_UNQUOTED(ENGINE_VERSION, "$ENGINE_VERSION",
-	[notification-daemon-engine-nodoka version.])
+	[notification-daemon-engine-coco version.])
 
 
 AM_INIT_AUTOMAKE([-Wall -Werror])
@@ -35,7 +35,7 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
 PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.17.1,, 
-                   AC_MSG_ERROR([GTK+-2.18 is required to compile nodoka]))
+                  AC_MSG_ERROR([GTK+-2.18 is required to compile nodoka]))
 
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)

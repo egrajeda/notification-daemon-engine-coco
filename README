@@ -1,23 +1,20 @@
-Notification Daemon Nodoka Engine/Theme
-***************************************
+Notification Daemon Coco Engine/Theme
+*************************************
+
+This engine tries to mimic the behavior of NotifyOSD. It is based on the nodoka
+engine by Martin Sourada.
 
 LICENSE INFORMATION
 ===================
-
 This package is licensed under GPLv3+. Read COPYING for more details.
 
 SHORT DESCRIPTION
 =================
-
-This package contains the nodoka engine for the notification daemon theme.
+This package contains the coco engine for the notification daemon theme.
 
 REQUIRES
 ========
-In order to build you need these two packages:
-libsexy
-gtk2
-
-In Fedora this means you need to install libsexy-devel package.
+In order to build you need the gtk2 package.
 
 INSTALLATION INSTRUCTIONS
 =========================
@@ -28,4 +25,4 @@ make install
 
 HOW TO ENABLE
 =============
-Set gconf "/apps/notification-daemon/theme" key to "nodoka".
+Set gconf "/apps/notification-daemon/theme" key to "coco".

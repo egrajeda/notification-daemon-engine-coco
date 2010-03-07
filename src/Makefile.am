@@ -1,9 +1,9 @@
-AM_CPPFLAGS = $(GTK_CFLAGS) $(LIBSEXY_CFLAGS)
+AM_CPPFLAGS = $(GTK_CFLAGS)
 
 enginedir = $(libdir)/notification-daemon-1.0/engines
-engine_LTLIBRARIES = libnodoka.la
+engine_LTLIBRARIES = libcoco.la
 
-libnodoka_la_SOURCES = nodoka-theme.c
+libcoco_la_SOURCES = coco-theme.c
 
-libnodoka_la_LDFLAGS = -module -avoid-version
-libnodoka_la_LIBADD =  $(GTK_LIBS) $(LIBSEXY_LIBS)
+libcoco_la_LDFLAGS = -module -avoid-version
+libcoco_la_LIBADD = $(GTK_LIBS) 
