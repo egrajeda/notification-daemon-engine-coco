@@ -615,7 +615,6 @@ get_theme_info(char **theme_name,
 GtkWindow *
 create_notification(UrlClickedCb url_clicked)
 {
-	GtkWidget *spacer;
 	GtkWidget *win;
 	GtkWidget *drawbox;
 	GtkWidget *main_vbox;
@@ -687,19 +686,14 @@ create_notification(UrlClickedCb url_clicked)
 	gtk_widget_show(windata->main_hbox);
 	gtk_container_add(GTK_CONTAINER(padding), windata->main_hbox);
     
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
 	gtk_box_pack_start(GTK_BOX(windata->main_hbox), vbox, TRUE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 13);
 
 	hbox = gtk_hbox_new(FALSE, 6);
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-
-	spacer = gtk_image_new();
-	gtk_widget_show(spacer);
-	gtk_box_pack_start(GTK_BOX(hbox), spacer, FALSE, FALSE, 0);
-	gtk_widget_set_size_request(spacer, SPACER_LEFT, -1);
 
 	windata->summary_label = gtk_label_new(NULL);
 	gtk_widget_show(windata->summary_label);
@@ -715,6 +709,7 @@ create_notification(UrlClickedCb url_clicked)
 
 	windata->iconbox = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(windata->iconbox);
+    gtk_widget_hide(windata->iconbox);
 	gtk_box_pack_start(GTK_BOX(windata->content_hbox), windata->iconbox,
 					   FALSE, FALSE, 0);
 	gtk_widget_set_size_request(windata->iconbox, BODY_X_OFFSET, -1);
@@ -738,8 +733,10 @@ create_notification(UrlClickedCb url_clicked)
 	atkobj = gtk_widget_get_accessible(windata->body_label);
 	atk_object_set_description(atkobj, "Notification body text.");
 
+    /* Disabled for now */
 	alignment = gtk_alignment_new(1, 0.5, 0, 0);
 	gtk_widget_show(alignment);
+    gtk_widget_hide(alignment);
 	gtk_box_pack_start(GTK_BOX(vbox), alignment, FALSE, TRUE, 0);
 
 	windata->actions_box = gtk_hbox_new(FALSE, 6);
