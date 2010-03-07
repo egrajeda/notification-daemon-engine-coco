@@ -709,7 +709,6 @@ create_notification(UrlClickedCb url_clicked)
 
 	windata->iconbox = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(windata->iconbox);
-    gtk_widget_hide(windata->iconbox);
 	gtk_box_pack_start(GTK_BOX(windata->content_hbox), windata->iconbox,
 					   FALSE, FALSE, 0);
 	gtk_widget_set_size_request(windata->iconbox, BODY_X_OFFSET, -1);
