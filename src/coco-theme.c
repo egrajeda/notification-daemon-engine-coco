@@ -1,21 +1,22 @@
 /*
- * nodoka-theme.c
- * This file is part of notification-daemon-engine-nodoka
+ * coco-theme.c
+ * This file is part of notification-daemon-engine-coco
  *
+ * Copyright (C) 2010 - Eduardo Grajeda
  * Copyright (C) 2008 - Martin Sourada
  *
- * notification-daemon-engine-nodoka is free software; you can redistribute it 
+ * notification-daemon-engine-coco is free software; you can redistribute it 
  * and/or modify it under the terms of the GNU General Public License as 
  * published by the Free Software Foundation; either version 3 of the License, 
  * or (at your option) any later version.
  *
- * notification-daemon-engine-nodoka is distributed in the hope that it will be 
+ * notification-daemon-engine-coco is distributed in the hope that it will be 
  * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with notification-daemon-engine-nodoka; if not, write to the Free 
+ * along with notification-daemon-engine-coco; if not, write to the Free 
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, 
  * Boston, MA  02110-1301  USA
  */
@@ -26,7 +27,7 @@
 
 #include <gtk/gtk.h>
 
-/* Define basic nodoka types */
+/* Define basic coco types */
 typedef void (*ActionInvokedCb)(GtkWindow *nw, const char *key);
 typedef void (*UrlClickedCb)(GtkWindow *nw, const char *url);
 
@@ -603,12 +604,12 @@ get_theme_info(char **theme_name,
 			   char **author,
 			   char **homepage)
 {
-	*theme_name = g_strdup("Nodoka");
+	*theme_name = g_strdup("Coco");
 	*theme_ver  = g_strdup_printf("%d.%d.%d", ENGINE_MAJOR_VERSION, 
                                                   ENGINE_MINOR_VERSION, 
 						  ENGINE_MICRO_VERSION);
-	*author = g_strdup("Martin Sourada");
-	*homepage = g_strdup("https://nodoka.fedorahosted.org/");
+	*author = g_strdup("Eduardo Grajeda");
+	*homepage = g_strdup("http://github.com/tatofoo/");
 }
 
 /* Create new notification */
