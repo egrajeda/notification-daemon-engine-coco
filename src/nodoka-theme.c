@@ -224,36 +224,6 @@ destroy_windata(WindowData *windata)
 }
 
 static void
-update_spacers(GtkWidget *nw)
-{
-	WindowData *windata = g_object_get_data(G_OBJECT(nw), "windata");
-
-	if (windata->arrow.has_arrow)
-	{
-		switch (get_notification_arrow_type(GTK_WIDGET(nw)))
-		{
-			case GTK_ARROW_UP:
-				gtk_widget_show(windata->top_spacer);
-				gtk_widget_hide(windata->bottom_spacer);
-				break;
-
-			case GTK_ARROW_DOWN:
-				gtk_widget_hide(windata->top_spacer);
-				gtk_widget_show(windata->bottom_spacer);
-				break;
-
-			default:
-				g_assert_not_reached();
-		}
-	}
-	else
-	{
-		gtk_widget_hide(windata->top_spacer);
-		gtk_widget_hide(windata->bottom_spacer);
-	}
-}
-
-static void
 update_content_hbox_visibility(WindowData *windata)
 {
 	/*
@@ -367,8 +337,8 @@ fill_background(GtkWidget *widget, WindowData *windata, cairo_t *cr)
 		nodoka_rounded_rectangle_with_arrow (cr, 0, 0, 
 			windata->width, windata->height, 6, & (windata->arrow));
 	else
-		nodoka_rounded_rectangle (cr, 0, 0, windata->width, 
-			windata->height, 6);
+		nodoka_rounded_rectangle (cr, 0, 8, windata->width-8, 
+			windata->height-8, 6);
 	cairo_fill (cr);	
 }
 
@@ -567,7 +537,6 @@ configure_event_cb(GtkWidget *nw,
 	windata->width = event->width;
 	windata->height = event->height;
 
-	update_spacers(nw);
 	gtk_widget_queue_draw(nw);
 
 	return FALSE;
@@ -655,6 +624,7 @@ create_notification(UrlClickedCb url_clicked)
 	GtkWidget *close_button;
 	GtkWidget *image;
 	GtkWidget *alignment;
+    GtkWidget *padding;
 	AtkObject *atkobj;
 	WindowData *windata;
 	GdkColormap *colormap;
@@ -682,7 +652,6 @@ create_notification(UrlClickedCb url_clicked)
 	gtk_window_set_title(GTK_WINDOW(win), "Notification");
 	gtk_widget_add_events(win, GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
 	gtk_widget_realize(win);
-//	gtk_widget_set_size_request(win, WIDTH, -1);
 
 	g_object_set_data_full(G_OBJECT(win), "windata", windata,
 						   (GDestroyNotify)destroy_windata);
@@ -705,27 +674,19 @@ create_notification(UrlClickedCb url_clicked)
 	main_vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(main_vbox);
 	gtk_container_add(GTK_CONTAINER(drawbox), main_vbox);
-	gtk_container_set_border_width(GTK_CONTAINER(main_vbox), 1);
 
 	g_signal_connect(G_OBJECT(main_vbox), "expose_event",
 					 G_CALLBACK(paint_window), windata);
 
-	windata->top_spacer = gtk_image_new();
-	gtk_box_pack_start(GTK_BOX(main_vbox), windata->top_spacer,
-					   FALSE, FALSE, 0);
-	gtk_widget_set_size_request(windata->top_spacer, -1, DEFAULT_ARROW_HEIGHT);
+    padding = gtk_alignment_new(0, 0, 0, 0);
+	gtk_widget_show(padding);
+	gtk_box_pack_start(GTK_BOX(main_vbox), padding, FALSE, FALSE, 0);
+    g_object_set(G_OBJECT(padding), "top-padding", 8, "right-padding", 8);
 
 	windata->main_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(windata->main_hbox);
-	gtk_box_pack_start(GTK_BOX(main_vbox), windata->main_hbox,
-					   FALSE, FALSE, 0);
-
-	windata->bottom_spacer = gtk_image_new();
-	gtk_box_pack_start(GTK_BOX(main_vbox), windata->bottom_spacer,
-					   FALSE, FALSE, 0);
-	gtk_widget_set_size_request(windata->bottom_spacer, -1,
-								DEFAULT_ARROW_HEIGHT);
-
+	gtk_container_add(GTK_CONTAINER(padding), windata->main_hbox);
+    
 	vbox = gtk_vbox_new(FALSE, 6);
 	gtk_widget_show(vbox);
 	gtk_box_pack_start(GTK_BOX(windata->main_hbox), vbox, TRUE, TRUE, 0);
@@ -748,28 +709,6 @@ create_notification(UrlClickedCb url_clicked)
 
 	atkobj = gtk_widget_get_accessible(windata->summary_label);
 	atk_object_set_description(atkobj, "Notification summary text.");
-
-	/* Add the close button */
-    /*
-	close_button = gtk_button_new();
-	gtk_widget_show(close_button);
-	gtk_box_pack_start(GTK_BOX(hbox), close_button, FALSE, FALSE, 0);
-	gtk_button_set_relief(GTK_BUTTON(close_button), GTK_RELIEF_NONE);
-	gtk_container_set_border_width(GTK_CONTAINER(close_button), 0);
-	gtk_widget_set_size_request(close_button, 24, 24);
-	g_signal_connect_swapped(G_OBJECT(close_button), "clicked",
-							 G_CALLBACK(gtk_widget_destroy), win);
-
-	atkobj = gtk_widget_get_accessible(close_button);
-	atk_action_set_description(ATK_ACTION(atkobj), 0,
-							   "Closes the notification.");
-	atk_object_set_name(atkobj, "");
-	atk_object_set_description(atkobj, "Closes the notification.");
-
-	image = gtk_image_new_from_stock(GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU);
-	gtk_widget_show(image);
-	gtk_container_add(GTK_CONTAINER(close_button), image);
-    */
 
 	windata->content_hbox = gtk_hbox_new(FALSE, 6);
 	gtk_box_pack_start(GTK_BOX(vbox), windata->content_hbox, FALSE, FALSE, 0);
@@ -877,8 +816,6 @@ set_notification_arrow(GtkWidget *nw, gboolean visible, int x, int y)
 	windata->arrow.has_arrow = visible;
 	windata->arrow.position.x = x;
 	windata->arrow.position.y = y;
-
-	update_spacers(nw);
 }
 
 /* Add notification action */
