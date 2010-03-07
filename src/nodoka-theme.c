@@ -698,9 +698,14 @@ create_notification(UrlClickedCb url_clicked)
 					   FALSE, FALSE, 0);
 
     /* The title and the text at the right */
+    padding = gtk_alignment_new(0, 0, 0, 0);
+	gtk_widget_show(padding);
+	gtk_box_pack_start(GTK_BOX(windata->main_hbox), padding, TRUE, TRUE, 0);
+    g_object_set(G_OBJECT(padding), "left-padding", 8);
+
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
-	gtk_box_pack_start(GTK_BOX(windata->main_hbox), vbox, TRUE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(padding), vbox);
 
 	windata->summary_label = gtk_label_new(NULL);
 	gtk_widget_show(windata->summary_label);
