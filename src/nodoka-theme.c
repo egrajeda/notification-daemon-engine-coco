@@ -96,7 +96,7 @@ enum
 #define DEFAULT_ARROW_HEIGHT  14
 #define DEFAULT_ARROW_WIDTH   22
 #define DEFAULT_ARROW_SKEW    -6
-#define BACKGROUND_OPACITY    0.92
+#define BACKGROUND_OPACITY    0.90
 #define GRADIENT_CENTER 0.7
 
 /* Support Nodoka Functions */
@@ -354,9 +354,12 @@ fill_background(GtkWidget *widget, WindowData *windata, cairo_t *cr)
 
 	cairo_pattern_t *pattern;
 	pattern = cairo_pattern_create_linear (0, 0, 0, windata->height);
-	cairo_pattern_add_color_stop_rgba (pattern, 0, 0.996, 0.996, 0.89, alpha);
-	cairo_pattern_add_color_stop_rgba (pattern, GRADIENT_CENTER, 0.988, 0.988, 0.714, alpha);
-	cairo_pattern_add_color_stop_rgba (pattern, 1, 0.984, 0.984, 0.663, alpha);
+	cairo_pattern_add_color_stop_rgba (pattern, 0, 
+        19/255.0, 19/255.0, 19/255.0, alpha);
+	cairo_pattern_add_color_stop_rgba (pattern, GRADIENT_CENTER, 
+        19/255.0, 19/255.0, 19/255.0, alpha);
+	cairo_pattern_add_color_stop_rgba (pattern, 1, 
+        19/255.0, 19/255.0, 19/255.0, alpha);
 	cairo_set_source (cr, pattern);
 	cairo_pattern_destroy (pattern);
 	
@@ -545,8 +548,6 @@ paint_window(GtkWidget *widget,
 	cr = cairo_create(surface);
 
 	fill_background(widget, windata, cr);
-	draw_border(widget, windata, cr);
-	draw_stripe(widget, windata, cr);
 
 	cairo_destroy(cr);
 	cairo_set_source_surface(context, surface, 0, 0);
@@ -749,6 +750,7 @@ create_notification(UrlClickedCb url_clicked)
 	atk_object_set_description(atkobj, "Notification summary text.");
 
 	/* Add the close button */
+    /*
 	close_button = gtk_button_new();
 	gtk_widget_show(close_button);
 	gtk_box_pack_start(GTK_BOX(hbox), close_button, FALSE, FALSE, 0);
@@ -767,6 +769,7 @@ create_notification(UrlClickedCb url_clicked)
 	image = gtk_image_new_from_stock(GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU);
 	gtk_widget_show(image);
 	gtk_container_add(GTK_CONTAINER(close_button), image);
+    */
 
 	windata->content_hbox = gtk_hbox_new(FALSE, 6);
 	gtk_box_pack_start(GTK_BOX(vbox), windata->content_hbox, FALSE, FALSE, 0);
@@ -814,11 +817,15 @@ set_notification_text(GtkWindow *nw, const char *summary, const char *body)
 	WindowData *windata = g_object_get_data(G_OBJECT(nw), "windata");
 	g_assert(windata != NULL);
 
-	str = g_strdup_printf("<b><big>%s</big></b>", summary);
+	str = g_strdup_printf(
+        "<span color=\"#FFFFFF\"><big><b>%s</b></big></span>", summary);
 	gtk_label_set_markup(GTK_LABEL(windata->summary_label), str);
 	g_free(str);
 
-	gtk_label_set_markup (GTK_LABEL (windata->body_label), body);
+	str = g_strdup_printf(
+        "<span color=\"#EAEAEA\">%s</span>", body);
+	gtk_label_set_markup (GTK_LABEL (windata->body_label), str);
+	g_free(str);
 
 	if (body == NULL || *body == '\0')
 		gtk_widget_hide(windata->body_label);
