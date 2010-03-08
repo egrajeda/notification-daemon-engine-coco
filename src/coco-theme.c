@@ -85,7 +85,7 @@ enum
 
 #define M_PI 3.14159265358979323846
 #define STRIPE_WIDTH  32
-#define WIDTH         400
+#define WIDTH         300
 #define IMAGE_SIZE    32
 #define IMAGE_PADDING 10
 #define SPACER_LEFT   30
