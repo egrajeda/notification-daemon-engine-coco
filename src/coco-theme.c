@@ -699,7 +699,7 @@ create_notification(UrlClickedCb url_clicked)
 					   FALSE, FALSE, 0);
 
     /* The title and the text at the right */
-    padding = gtk_alignment_new(0, 0, 0, 0);
+    padding = gtk_alignment_new(0, 0.5, 0, 0);
 	gtk_widget_show(padding);
 	gtk_box_pack_start(GTK_BOX(windata->main_hbox), padding, TRUE, TRUE, 0);
     g_object_set(G_OBJECT(padding), "left-padding", 8);
