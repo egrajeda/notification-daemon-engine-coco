@@ -20,8 +20,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, 
  * Boston, MA  02110-1301  USA
  */
- 
- 
 
 #include "config.h"
 
@@ -51,7 +49,6 @@ typedef struct
 	GtkWidget *main_hbox;
 	GtkWidget *iconbox;
 	GtkWidget *icon;
-	GtkWidget *content_hbox;
 	GtkWidget *summary_label;
 	GtkWidget *body_label;
 	GtkWidget *actions_box;
@@ -222,25 +219,6 @@ static void
 destroy_windata(WindowData *windata)
 {
 	g_free(windata);
-}
-
-static void
-update_content_hbox_visibility(WindowData *windata)
-{
-	/*
-	 * This is all a hack, but until we have a libview-style ContentBox,
-	 * it'll just have to do.
-	 */
-	if (GTK_WIDGET_VISIBLE(windata->icon) ||
-		GTK_WIDGET_VISIBLE(windata->body_label) ||
-		GTK_WIDGET_VISIBLE(windata->actions_box))
-	{
-		//gtk_widget_show(windata->content_hbox);
-	}
-	else
-	{
-		//gtk_widget_hide(windata->content_hbox);
-	}
 }
 
 /* Draw fuctions */
@@ -762,8 +740,6 @@ set_notification_text(GtkWindow *nw, const char *summary, const char *body)
 	else
 		gtk_widget_show(windata->body_label);
 
-	update_content_hbox_visibility(windata);
-
 	gtk_widget_set_size_request(
 		((body != NULL && *body != '\0')
 		 ? windata->body_label : windata->summary_label),
@@ -793,8 +769,6 @@ set_notification_icon(GtkWindow *nw, GdkPixbuf *pixbuf)
 		gtk_widget_hide(windata->icon);
 		gtk_widget_set_size_request(windata->iconbox, BODY_X_OFFSET, -1);
 	}
-
-	update_content_hbox_visibility(windata);
 }
 
 /* Set notification arrow */
@@ -828,7 +802,6 @@ add_notification_action(GtkWindow *nw, const char *text, const char *key,
 		GtkWidget *alignment;
 
 		gtk_widget_show(windata->actions_box);
-		update_content_hbox_visibility(windata);
 
 		alignment = gtk_alignment_new(1, 0.5, 0, 0);
 		gtk_widget_show(alignment);
