@@ -31,18 +31,6 @@ typedef void (*UrlClickedCb)(GtkWindow *nw, const char *url);
 
 typedef struct
 {
-	gboolean has_arrow;
-
-	GdkPoint point_begin;
-	GdkPoint point_middle;
-	GdkPoint point_end;
-
-	int offset;
-	GdkPoint position;
-} ArrowParameters;
-
-typedef struct
-{
 	GtkWidget *win;
 	GtkWidget *top_spacer;
 	GtkWidget *bottom_spacer;
@@ -55,8 +43,6 @@ typedef struct
 	GtkWidget *last_sep;
 	GtkWidget *stripe_spacer;
 	GtkWidget *pie_countdown;
-
-	ArrowParameters arrow;
 
 	gboolean enable_transparency;
 	
@@ -107,114 +93,6 @@ activate_link (GtkLabel *label, const char *url, WindowData *windata)
 	return TRUE;
 }
 
-/* Set if we have arrow down or arrow up */
-static GtkArrowType
-get_notification_arrow_type(GtkWidget *nw)
-{
-	WindowData *windata = g_object_get_data(G_OBJECT(nw), "windata");
-	int screen_height;
-
-	screen_height = gdk_screen_get_height(
-		gdk_drawable_get_screen(GDK_DRAWABLE(nw->window)));
-
-	if (windata->arrow.position.y + windata->height + DEFAULT_ARROW_HEIGHT >
-		screen_height)
-	{
-		return GTK_ARROW_DOWN;
-	}
-	else
-	{
-		return GTK_ARROW_UP;
-	}
-}
-
-/* Set arrow parameters like offset and position */
-static void
-set_arrow_parameters (WindowData *windata)
-{
-	int screen_height;
-	int screen_width;
-	int x,y;
-	GtkArrowType arrow_type;
-
-	screen_height = gdk_screen_get_height(
-		gdk_drawable_get_screen(GDK_DRAWABLE(windata->win->window)));
-	screen_width = gdk_screen_get_width(
-		gdk_drawable_get_screen(GDK_DRAWABLE(windata->win->window)));
-
-
-	/* Set arrow offset */
-	if ((windata->arrow.position.x - DEFAULT_ARROW_SKEW - 
-		DEFAULT_ARROW_OFFSET + windata->win->allocation.width) > 
-			screen_width)
-	{
-		windata->arrow.offset = windata->arrow.position.x - 
-					DEFAULT_ARROW_SKEW - 
-					(screen_width - 
-						windata->win->allocation.width);
-	}
-	else if ((windata->arrow.position.x - DEFAULT_ARROW_SKEW - 
-		DEFAULT_ARROW_OFFSET < 0))
-	{
-		windata->arrow.offset = windata->arrow.position.x - 
-					DEFAULT_ARROW_SKEW;
-	}
-	else
-	{
-		windata->arrow.offset = DEFAULT_ARROW_OFFSET;
-	}
-
-	if (windata->arrow.offset < 6)
-	{
-		windata->arrow.offset = 6;
-		windata->arrow.position.x += 6;
-	}
-	else if (windata->arrow.offset + DEFAULT_ARROW_WIDTH + 6 > 
-			windata->win->allocation.width)
-	{
-		windata->arrow.offset = windata->win->allocation.width - 6 - 
-					DEFAULT_ARROW_WIDTH;
-		windata->arrow.position.x -= 6;
-	}
-
-	/* Set arrow points X position */
-	windata->arrow.point_begin.x = windata->arrow.offset;
-	windata->arrow.point_middle.x = windata->arrow.offset + 
-					DEFAULT_ARROW_SKEW;
-	windata->arrow.point_end.x = windata->arrow.offset +
-					DEFAULT_ARROW_WIDTH;
-	x = windata->arrow.position.x - DEFAULT_ARROW_SKEW - windata->arrow.offset;
-
-	/* Set arrow points Y position */
-	arrow_type = get_notification_arrow_type(windata->win);
-	
-	switch (arrow_type)
-	{
-		case GTK_ARROW_UP:
-			windata->arrow.point_begin.y = DEFAULT_ARROW_HEIGHT;
-			windata->arrow.point_middle.y = 0;
-			windata->arrow.point_end.y = DEFAULT_ARROW_HEIGHT;
-			y = windata->arrow.position.y;
-			break;
-		case GTK_ARROW_DOWN:
-			windata->arrow.point_begin.y = 
-				windata->win->allocation.height - 
-					DEFAULT_ARROW_HEIGHT;
-			windata->arrow.point_middle.y = 
-				windata->win->allocation.height;
-			windata->arrow.point_end.y = 
-				windata->win->allocation.height - 
-					DEFAULT_ARROW_HEIGHT;
-			y = windata->arrow.position.y - windata->win->allocation.height;
-			break;
-		default:
-			g_assert_not_reached();
-	}
-
-	/* Move window to requested position */
-	gtk_window_move(GTK_WINDOW(windata->win), x, y);
-}
-
 static void
 destroy_windata(WindowData *windata)
 {
@@ -233,62 +111,6 @@ nodoka_rounded_rectangle (cairo_t * cr,
 	cairo_arc (cr, x + w - radius, y + h - radius, radius, 0, M_PI * 0.5);
 	cairo_arc (cr, x + radius, y + h - radius, radius, M_PI * 0.5, M_PI);
 	cairo_arc (cr, x + radius, y + radius, radius, M_PI, M_PI * 1.5);
-}
-
-/* Rounded rectangle with arrow */
-static void
-nodoka_rounded_rectangle_with_arrow (cairo_t * cr, 
-				double x, double y, double w, double h, 
-				int radius, ArrowParameters * arrow)
-{
-	gboolean arrow_up;
-	arrow_up = (arrow->point_begin.y > arrow->point_middle.y);
-
-	cairo_translate (cr, x, y);
-
-	GdkRectangle rect;
-	rect.x = 0;
-	rect.width = w;
-	if (arrow_up)
-		rect.y = 0 + DEFAULT_ARROW_HEIGHT;
-	else 
-		rect.y = 0;
-	rect.height = h - DEFAULT_ARROW_HEIGHT;
-
-	cairo_move_to (cr, rect.x + radius, rect.y);	
-
-	if (arrow_up)
-	{
-		cairo_line_to (cr, rect.x + arrow->point_begin.x, 
-				rect.y);
-		cairo_line_to (cr, rect.x + arrow->point_middle.x, 
-				rect.y - DEFAULT_ARROW_HEIGHT);
-		cairo_line_to (cr, rect.x + arrow->point_end.x, 
-				rect.y);
-	}
-
-	cairo_arc (cr, rect.x + rect.width - radius, rect.y + radius, radius, 
-			M_PI * 1.5, M_PI * 2);
-	cairo_arc (cr, rect.x + rect.width - radius, 
-			rect.y + rect.height - radius, radius, 0, M_PI * 0.5);
-
-	if (!arrow_up)
-	{
-		cairo_line_to (cr, rect.x + arrow->point_end.x, 
-				rect.y + rect.height);
-		cairo_line_to (cr, rect.x + arrow->point_middle.x, 
-				rect.y + rect.height + DEFAULT_ARROW_HEIGHT);
-		cairo_line_to (cr, rect.x + arrow->point_begin.x, 
-				rect.y + rect.height);
-	}
-
-	cairo_arc (cr, rect.x + radius, rect.y + rect.height - radius, 
-			radius, M_PI * 0.5, M_PI);
-	cairo_arc (cr, rect.x + radius, rect.y + radius, radius, M_PI, 
-			M_PI * 1.5);
-
-	cairo_translate (cr, -x, -y);
-
 }
 
 /* Fill background */
@@ -312,12 +134,9 @@ fill_background(GtkWidget *widget, WindowData *windata, cairo_t *cr)
 	cairo_set_source (cr, pattern);
 	cairo_pattern_destroy (pattern);
 	
-	if (windata->arrow.has_arrow)
-		nodoka_rounded_rectangle_with_arrow (cr, 0, 0, 
-			windata->width, windata->height, 6, & (windata->arrow));
-	else
-		nodoka_rounded_rectangle (cr, 0, 8, windata->width-8, 
-			windata->height-8, 6);
+    nodoka_rounded_rectangle (cr, 0, 8, windata->width-8,
+        windata->height-8, 6);
+
 	cairo_fill (cr);	
 }
 
@@ -344,9 +163,6 @@ paint_window(GtkWidget *widget,
 		windata->height = windata->win->allocation.height;
 	}
 	
-	if (windata->arrow.has_arrow)
-		set_arrow_parameters (windata);
-
 	if (!(windata->enable_transparency))
 	{
 			GdkPixmap *mask;
@@ -359,15 +175,8 @@ paint_window(GtkWidget *widget,
 
 			cairo_set_operator (mask_cr, CAIRO_OPERATOR_OVER);
 			cairo_set_source_rgba (mask_cr, 1, 1, 1, 1);
-			if (windata->arrow.has_arrow)
-			{
-				nodoka_rounded_rectangle_with_arrow (mask_cr, 0, 
-					0, windata->width, windata->height, 6, 
-					& (windata->arrow));
-			}
-			else
-				nodoka_rounded_rectangle (mask_cr, 0, 0, 
-					windata->width, windata->height, 6);
+            nodoka_rounded_rectangle (mask_cr, 0, 0, 
+                windata->width, windata->height, 6);
 			cairo_fill (mask_cr);
 			gdk_window_shape_combine_mask (windata->win->window,
 						       (GdkBitmap *) mask, 0,0);
@@ -664,12 +473,7 @@ set_notification_icon(GtkWindow *nw, GdkPixbuf *pixbuf)
 void
 set_notification_arrow(GtkWidget *nw, gboolean visible, int x, int y)
 {
-	WindowData *windata = g_object_get_data(G_OBJECT(nw), "windata");
-	g_assert(windata != NULL);
-
-	windata->arrow.has_arrow = visible;
-	windata->arrow.position.x = x;
-	windata->arrow.position.y = y;
+    /* nothing */
 }
 
 /* Add notification action */
@@ -765,14 +569,7 @@ move_notification(GtkWidget *nw, int x, int y)
 	WindowData *windata = g_object_get_data(G_OBJECT(nw), "windata");
 	g_assert(windata != NULL);
 
-	if (windata->arrow.has_arrow)
-	{
-		gtk_widget_queue_resize(nw);
-	}
-	else
-	{
-		gtk_window_move(GTK_WINDOW(nw), x, y);
-	}
+    gtk_window_move(GTK_WINDOW(nw), x, y);
 }
 
 
