@@ -1,4 +1,4 @@
-AM_CPPFLAGS = $(GTK_CFLAGS)
+AM_CPPFLAGS = $(GTK_CFLAGS) -Wall
 
 enginedir = $(libdir)/notification-daemon-1.0/engines
 engine_LTLIBRARIES = libcoco.la
