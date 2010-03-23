@@ -1,38 +1,45 @@
 README
 ======
+Hello, this is my attempt to simulate the notification system used by Ubuntu 
+(NotifyOSD) on the widely used notification-daemon.
 
-Hello, this is my attempt to simulate the notification system used by Ubuntu (NotifyOSD) on the widely used notification-daemon.
-
-It is far from reaching its goal, but I'm working on it and I'll appreciate any feedbacks, patches, suggestions, insults, cookies, laptops :D.
+It is far from reaching its goal, but I'm working on it and I'll appreciate 
+any feedbacks, patches, suggestions, insults, cookies, laptops :D.
 
 What do I get with this engine?
 -------------------------------
-
 Your notifications will look like this:
 
 http://www.flickr.com/photos/tatofoo/4413143886/
 
 Drawbacks?
 ----------
-Of course there are. I've disabled some features that most notification-daemon themes have, so it would look more like NotifyOSD:
+Of course there are. I've disabled some features that most notification-daemon 
+themes have, so it would look more like NotifyOSD:
 
-* No close button
-* If the notification had buttons, they won't appear.
-* There is no way to see the urgency
-* Disabled all kind of arrows (see the next section for more about this)
+    * No close button
+    * If the notification had buttons, they won't appear.
+    * There is no way to see the urgency
+    * Disabled all kind of arrows (see the next section for more about this)
 
 I'm quite sure there is another one, but I don't remember it right now :P.
 
 Notifications attached to status icons/widgets
 ----------------------------------------------
-Since this theme doesn't display arrows, the notifications that are supposed to appear near a certain icon or widget will look weird. 
+Since this theme doesn't display arrows, the notifications that are supposed
+to appear near a certain icon or widget will look weird. 
 
-The behavior I wanted is that **all** notifications should appear on the top right corner (or wherever you chose to), and that can't be done in here, it must be done in libnotify.
+The behavior I wanted is that **all** notifications should appear on the top
+right corner (or wherever you chose to), and that can't be done in here, it
+must be done in libnotify.
 
-So I did a little hack on the last version as of now (23/03/2010) and you can find it on:
+So I did a little hack on the last version as of now (23/03/2010) and you can 
+find it on:
 
 http://github.com/tatofoo/libnotify-hack
 
 License
 -------
-I've inherited the license of the project which this engine is based on: Nodoka (thanks for the great engine and code! :D). So, this package is licensed under GPLv3+ and you can see the LICENSE file for more details.
+I've inherited the license of the project which this engine is based on: 
+Nodoka (thanks for the great engine and code! :D). So, this package is 
+licensed under GPLv3+ and you can see the LICENSE file for more details.
