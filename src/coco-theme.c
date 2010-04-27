@@ -357,7 +357,7 @@ create_notification(UrlClickedCb url_clicked)
     padding = gtk_alignment_new(0, 0, 0, 0);
 	gtk_widget_show(padding);
 	gtk_box_pack_start(GTK_BOX(main_vbox), padding, FALSE, FALSE, 0);
-    g_object_set(G_OBJECT(padding), "top-padding", 8, "right-padding", 8);
+  g_object_set(G_OBJECT(padding), "top-padding", 8, "right-padding", 8, NULL);
 
 	windata->main_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(windata->main_hbox);
@@ -378,7 +378,7 @@ create_notification(UrlClickedCb url_clicked)
     padding = gtk_alignment_new(0, 0.5, 0, 0);
 	gtk_widget_show(padding);
 	gtk_box_pack_start(GTK_BOX(windata->main_hbox), padding, TRUE, TRUE, 0);
-    g_object_set(G_OBJECT(padding), "left-padding", 8);
+  g_object_set(G_OBJECT(padding), "left-padding", 8, NULL);
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
